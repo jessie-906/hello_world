@@ -22,6 +22,14 @@ def get_new_user_information(path):
     }   
     return information
 
+def greet_new_users(path):
+    information = get_new_user_information(path)
+    store_information(path,information)
+    reply = ''
+    for key, value in information.items():
+        reply += f"\n{key}:{value}"          
+    return "We'll remember your information:" + reply 
+
 def store_information(path,information):
     """store user's information"""    
     contents = json.dumps(information)
@@ -32,16 +40,18 @@ def greet_uers():
     path = Path('information.json')
     all_the_information = get_user_information(path)
     if all_the_information:
-        return  f"Welcome back,{all_the_information['first_name']}.{all_the_information['last_name']}!"
+        name = input(f"Are you {all_the_information['first_name']}?"
+        "\nyes 0r no ")
+        if name == "yes":
+            return  (f"Welcome back,{all_the_information['first_name']}."
+            f"{all_the_information['last_name']}! ")
         
+        elif name == "no":
+            print(greet_new_users(path))
+        else:
+            return ("Invalid input. Please try again.")
     else:
-        information = get_new_user_information(path)
-        store_information(path,information)
-        reply = ''
-        for key, value in information.items():
-            reply += f"\n{key}:{value}"          
-        return "We'll remember your information:" + reply 
-
+        print(greet_new_users(path))
 
 print(greet_uers())
 
