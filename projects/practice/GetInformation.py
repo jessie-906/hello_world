@@ -40,13 +40,14 @@ def greet_uers():
     path = Path('information.json')
     all_the_information = get_user_information(path)
     if all_the_information:
-        name = input(f"Are you {all_the_information['first_name']}?"
-        "\nyes 0r no ")
-        if name == "yes":
-            return  (f"Welcome back,{all_the_information['first_name']}."
-            f"{all_the_information['last_name']}! ")
+        check = input(f"Are you {all_the_information['first_name']}?"
+            "\nyes 0r no ")
+        if check == "yes":
+            return  ("Welcome back,"
+                f"{all_the_information['first_name']}."
+                f"{all_the_information['last_name']}! ")
         
-        elif name == "no":
+        elif check == "no":
             print(greet_new_users(path))
         else:
             return ("Invalid input. Please try again.")
