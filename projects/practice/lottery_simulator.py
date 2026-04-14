@@ -1,16 +1,18 @@
 from random import randint
 
 class Die:
-    def __init__(self,sides = 6):
+    def __init__(self):
+        sides = 6
         self.sides = sides
     
     def roll_die(self):
         return randint(1,self.sides)
 
-my_die = Die(20)
-#print(my_die.roll_die())
+my_die = Die()
+my_die.sides = 10
+print(my_die.roll_die())
 
-
+"""
 from random import choice
 
 n = list(range(1,11)) + list('abcde')
@@ -38,3 +40,4 @@ while my_w_n != w_n:
     
 print(my_w_n)
 print(f"直到中奖总共循环了{times}次")
+"""
