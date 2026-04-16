@@ -1,0 +1,5 @@
+安装第三方包输入：E:\programme\python3.12.10\python.exe -m pip install pytest(package_name)
+测试指令输入：E:\programme\python3.12.10\python.exe -m pytest test_code\test_city.py(文件路径)
+建立虚拟环境：E:\programme\python3.12.10\python.exe -m venv venv
+临时给予管理员权限：Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+激活虚拟环境：venv\Scripts\Activate；退出：deactivate（关闭终端窗口自动失效）
