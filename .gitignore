@@ -179,3 +179,7 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+projects/alien_invasion.py/alien_invasion.py
+projects/alien_invasion.py/alien_invasion.py
+projects/alien_invasion.py/alien_invasion.py
+projects/AlienInvasion/images/cohete_001.png
