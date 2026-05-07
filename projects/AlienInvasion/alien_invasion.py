@@ -9,7 +9,7 @@ from alien import Alien
 
 class AlienInvasion():
     def __init__(self):
-        """初始化游戏并创键游戏资源"""
+        """Initialize the game and create resources"""
         pygame.init()
         self.clock = pygame.time.Clock()
         self.settings = Settings()
@@ -26,7 +26,7 @@ class AlienInvasion():
         self._create_fleet()
                                                             
     def run_game(self):
-        """开始游戏的主循环"""
+        """Start the main loop for the game"""
         while True:
             self.check_events() 
             self.ship.update() 
@@ -35,7 +35,7 @@ class AlienInvasion():
             self.clock.tick(60)
     
     def check_events(self):
-        """响应按键和鼠标事件"""
+        """Respond to keypresses and mouse events"""
         for event in pygame.event.get():                            #pygame.event.get()从 Pygame 的事件队列（event queue），
             if event.type == pygame.QUIT:                           #中取出所有未处理的事件，返回一个列表，
                 sys.exit()                                          #每次调用后，队列会被清空（避免重复处理）
@@ -45,7 +45,7 @@ class AlienInvasion():
                 self.check_keyup_events(event)          
 
     def check_keydown_events(self,event):
-        """响应按下"""
+        """Respond to KRYDOWN events"""
         if event.key == pygame.K_RIGHT:                        
             self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
@@ -56,35 +56,52 @@ class AlienInvasion():
             self._fire_bullet()
 
     def check_keyup_events(self,event):
-        """响应释放"""
+        """Respond to KEYUP events"""
         if event.key == pygame.K_RIGHT:    
             self.ship.moving_right = False
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False 
 
     def _fire_bullet(self):
-        """创建一颗子弹,并将其加入编组bullets"""
+        """Create a new bullet and add it to the bullets group"""
         if len(self.bullets) < self.settings.bullet_allowed:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
 
     def _update_bullets(self):
-        """更新子弹的位置并删除已消失的子弹"""
-        #更新子弹位置
+        """Update position of bullets and get rid of old bullets"""
         self.bullets.update()
 
-        #删除已消失的子弹
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
+                
     def _create_fleet(self):
-        """创建一个外星人舰队"""
-        #创建一个外星人
+        """Create a fleet of aliens"""
+        #Create a row of aliens, filling the screen until no more space remains
+        #Set the spacing between aliens to equal one alien's width
         alien = Alien(self)
-        self.aliens.add(alien)
+        alien_width, alien_height = alien.rect.width, alien.rect.height
+        current_x, current_y = alien_width, alien_height
+        while current_y <= (self.settings.screen_height - 3 * alien_height):
+            while current_x <= (self.settings.screen_width - 2 * alien_width):
+                self._create_alien(current_x, current_y)
+                current_x += 2 * alien_width
+            #after adding a row of aliens, reset x and increment y.
+            current_x = alien_width
+            current_y += 2 * alien_height
+
+    def _create_alien(self,x_position,y_position):
+        new_alien = Alien(self)
+        new_alien.x = x_position
+        new_alien.y = y_position
+        new_alien.rect.x = new_alien.x
+        new_alien.rect.y = new_alien.y
+        self.aliens.add(new_alien)
+        
 
     def update_screen(self):
-        """更新屏幕上的图像，并切换到新屏幕"""
+        """Update image on the screen, and flip to the new screen"""
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
         for bullet in self.bullets.sprites():
@@ -96,6 +113,6 @@ class AlienInvasion():
 
 
 if __name__ == '__main__':
-    #创建游戏实例并运行游戏
+    #create a game instance and run the game
     ai = AlienInvasion()
     ai.run_game()
