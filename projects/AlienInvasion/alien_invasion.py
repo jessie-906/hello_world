@@ -31,7 +31,8 @@ class AlienInvasion():
             self.check_events() 
             self.ship.update() 
             self._update_bullets()
-            self.update_screen()
+            self._update_alien()
+            self._update_screen()
             self.clock.tick(60)
     
     def check_events(self):
@@ -92,15 +93,34 @@ class AlienInvasion():
             current_y += 2 * alien_height
 
     def _create_alien(self,x_position,y_position):
+        """Create an alien and add it to the fleet."""
         new_alien = Alien(self)
         new_alien.x = x_position
         new_alien.y = y_position
         new_alien.rect.x = new_alien.x
         new_alien.rect.y = new_alien.y
         self.aliens.add(new_alien)
-        
+    
+    def _check_fleet_edges(self):
+        """Take appropriate action if any alien reaches the edge."""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
 
-    def update_screen(self):
+    def _change_fleet_direction(self):
+        """Drop the fleet down and change its direction."""
+        for alien in self.aliens.sprites():
+            alien.y += self.settings.fleet_drop_speed
+            alien.rect.y = alien.y
+        self.settings.fleet_direction *= -1
+
+    def _update_alien(self):
+        """Update the positions of all  aliens in the fleet."""
+        self._check_fleet_edges()
+        self.aliens.update()
+
+    def _update_screen(self):
         """Update image on the screen, and flip to the new screen"""
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
