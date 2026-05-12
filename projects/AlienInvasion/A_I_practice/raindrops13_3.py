@@ -16,7 +16,7 @@ class Settings():
         self.margin_x = 100
         self.margin_y = 80
 
-        self.raindrop_drop_speed = 10
+        self.raindrop_drop_speed = 5
 
 class Raindrop(Sprite):
     def __init__(self,R_Game):
@@ -57,7 +57,6 @@ class RaindropsGame():
 
         self.raindrops = pygame.sprite.Group()
         self.create_rain()
-    
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -99,12 +98,18 @@ class RaindropsGame():
                 new_raindrop.rect.y = new_raindrop.y
 
                 self.raindrops.add(new_raindrop)
-    
+
+        
+    def continuous_raindrops(self):
+        for raindrop in self.raindrops.sprites():
+            if raindrop.rect.top >= self.screen_rect.bottom:
+                raindrop.y = self.settings.margin_y
+                raindrop.y -= raindrop.rect.height 
+                raindrop.rect.y = raindrop.y
+        
     def _update_raindrops(self):
         self.raindrops.update()
-        for raindrop in self.raindrops.copy():
-            if raindrop.rect.bottom >= self.screen_rect.bottom:
-                self.raindrops.remove(raindrop)
+        self.continuous_raindrops()
         
 if __name__ == '__main__':
     """Creare a game instance and run the game."""
