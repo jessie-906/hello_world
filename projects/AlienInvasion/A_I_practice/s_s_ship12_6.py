@@ -14,8 +14,16 @@ class Settings:
         self.bullet_width = 10
         self.bullet_height = 3
         self.bullet_speed = 3.0
+        #alien setting
+        self.alien_speed = 1.0
+        self.fleet_advance_speed = 10
+        self.fleet_direction = 1
 
+        self.row_number = 6
+        self.column_number = 8
 
+        self.draw_width = 600
+        self.draw_height = 800
 class Ship:
     def __init__(self,s_s):
         """初始化飞船设置"""
