@@ -31,6 +31,12 @@ class Ship():
             self.x -= self.settings.ship_speed
         #根据self.x更新rect对象(为了显示)
         self.rect.x = self.x
+
+    def center_ship(self):
+        """Center the ship at the screen's midbottom"""
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.x = float(self.rect.x)
+        
     def blitme(self):
         """在指定位置绘制飞船"""
         self.screen.blit(self.image,self.rect)                      #screen.blit(image, rect.topleft)
