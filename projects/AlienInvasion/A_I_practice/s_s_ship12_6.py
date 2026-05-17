@@ -9,6 +9,7 @@ class Settings:
         self.bg_color = (3,0,39)
         #飞船设置
         self.speed = 2.0
+        self.ship_limit = 3
         #子弹设置
         self.bullet_color = (255,0,0)
         self.bullet_width = 10
@@ -16,7 +17,7 @@ class Settings:
         self.bullet_speed = 3.0
         #alien setting
         self.alien_speed = 1.0
-        self.fleet_advance_speed = 10
+        self.fleet_advance_speed = 30
         self.fleet_direction = 1
 
         self.row_number = 6
@@ -37,6 +38,7 @@ class Ship:
         self.rect.midright = self.screen_rect.midright
 
         self.y = float(self.rect.y)
+        self.x = float(self.rect.x)
         
     def update(self,keys):
         """移动并刷新飞船位置"""
@@ -46,7 +48,20 @@ class Ship:
         if self.rect.bottom < self.screen_rect.bottom:
             if keys[pygame.K_DOWN]:
                 self.y += self.settings.speed  
+        if self.rect.left >= 0:
+            if keys[pygame.K_LEFT]:
+                self.x -= self.settings.speed
+        if self.rect.right <= self.screen_rect.right:
+            if keys[pygame.K_RIGHT]:
+                self.x += self.settings.speed
         self.rect.y = self.y  
+        self.rect.x = self.x
+
+    def center_ship(self):
+        """Center the ship at the screen's midbottom."""
+        self.rect.midright = self.screen_rect.midright
+        self.x = self.rect.x
+        self.y = self.rect.y
 
     def blitme(self):
         self.screen.blit(self.image,self.rect)
@@ -70,7 +85,7 @@ class Bullet(Sprite):
         self.x = float(self.rect.x)
 
     def update(self):
-        """向右移动子弹位置"""
+        """向左移动子弹位置"""
        
         self.x -= self.settings.bullet_speed
         self.rect.x = self.x

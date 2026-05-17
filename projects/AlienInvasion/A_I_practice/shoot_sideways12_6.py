@@ -1,6 +1,8 @@
 import sys
 import pygame
+from time import sleep
 
+from s_s_stats13_6 import GameStats
 from s_s_ship12_6 import Settings,Ship,Bullet
 from s_s_alien13_5 import Alien
 
@@ -13,7 +15,12 @@ class ShootSideways():
 
         self.screen = pygame.display.set_mode((self.settings.screen_width,
             self.settings.screen_height))
+        self.screen_rect = self.screen.get_rect()
         pygame.display.set_caption('ShootSideways')
+
+        self.game_active = True
+
+        self.stats = GameStats(self)
 
         self.ship = Ship(self)
         self.aliens = pygame.sprite.Group()
@@ -25,19 +32,23 @@ class ShootSideways():
         """游戏主循环"""
         while True:
             self.keys = pygame.key.get_pressed()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        self.fire_bullet()
-
-            self._update_alien()
-            self._update_bullets()
-            self.ship.update(self.keys)
-            self.update_screen()
+            self._check_events()
+            
+            if self.game_active:
+                self._update_alien()
+                self._update_bullets()
+                self.ship.update(self.keys)
+            self._update_screen()
             self.clock.tick(60)
     
+    def _check_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self._fire_bullet()
+
     def _create_fleet(self):
         """Create a fleet"""
         row_number = self.settings.row_number
@@ -59,7 +70,7 @@ class ShootSideways():
                 new_alien.rect.y = new_alien.y
                 self.aliens.add(new_alien)
 
-    def check_fleet_edges(self):
+    def _check_fleet_edges(self):
         """Take approriate action if any alien reches the edge."""
         for alien in self.aliens.sprites():
             if alien.check_edges():
@@ -77,9 +88,47 @@ class ShootSideways():
     def _update_alien(self):
         """Update the positions of all aliens in the fleet."""
         self.aliens.update()
-        self.check_fleet_edges()
+        self._check_fleet_edges()
+        self._check_ship_left()
 
-    def fire_bullet(self):
+    def _check_ship_left(self):
+        """Check if ship limit is reached."""    
+        if self.stats.ship_left > 0:
+            self._ship_hit()
+            self._check_aliens_right()
+
+        else:
+            #if so, game over.
+            self.game_active = False
+    
+    def _ship_hit(self):
+        """Respond to alien-ship collisions."""
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            #Decrement ship_left by 1
+            self.stats.ship_left -= 1
+
+            #Empty the lists of aliens and bullets 
+            self.aliens.empty()
+            self.bullets.empty()
+
+            #Reset the fleet and center the ship
+            self._create_fleet()
+            self.ship.center_ship()
+
+            #Reset the fleet direction
+            self.settings.fleet_direction = 1
+
+            #pause
+            sleep(0.5)
+    
+    def _check_aliens_right(self):
+        """Check for aliens reaching  the screen bottom."""
+        for alien in self.aliens.sprites():
+            if alien.rect.right >= self.screen_rect.right:
+                self._ship_hit()
+                break
+
+    def _fire_bullet(self):
         """创建子弹"""
         new_bullet = Bullet(self)
         
@@ -103,7 +152,7 @@ class ShootSideways():
             self.bullets.empty()
             self._create_fleet()
 
-    def update_screen(self):
+    def _update_screen(self):
         """创建并刷新屏幕,飞船和子弹"""
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
