@@ -36,7 +36,7 @@ class AlienInvasion():
     def run_game(self):
         """Start the main loop for the game"""
         while True:
-            self.check_events() 
+            self._check_events() 
 
             if self.game_active:
                 self.ship.update() 
@@ -45,17 +45,17 @@ class AlienInvasion():
             self._update_screen()
             self.clock.tick(60)
     
-    def check_events(self):
+    def _check_events(self):
         """Respond to keypresses and mouse events"""
         for event in pygame.event.get():                            #pygame.event.get()从 Pygame 的事件队列（event queue），
             if event.type == pygame.QUIT:                           #中取出所有未处理的事件，返回一个列表，
                 sys.exit()                                          #每次调用后，队列会被清空（避免重复处理）
             elif event.type == pygame.KEYDOWN:
-                self.check_keydown_events(event)                         
+                self._check_keydown_events(event)                         
             elif event.type == pygame.KEYUP:
-                self.check_keyup_events(event)          
+                self._check_keyup_events(event)          
 
-    def check_keydown_events(self,event):
+    def _check_keydown_events(self,event):
         """Respond to KRYDOWN events"""
         if event.key == pygame.K_RIGHT:                        
             self.ship.moving_right = True
@@ -66,7 +66,7 @@ class AlienInvasion():
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
 
-    def check_keyup_events(self,event):
+    def _check_keyup_events(self,event):
         """Respond to KEYUP events"""
         if event.key == pygame.K_RIGHT:    
             self.ship.moving_right = False
